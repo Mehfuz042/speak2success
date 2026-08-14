@@ -21,3 +21,13 @@ python -m http.server 3000
 ```
 
 Backup of previous project: `D:\SIP_backup_20260814_225136.zip`
+
+Database configuration
+----------------------
+- Set the MongoDB connection string in `backend/.env` as the `MONGO_URI` variable.
+- Example (URL-encode special characters in the password):
+
+```
+MONGO_URI="mongodb+srv://shaikmehfuz07_db_user:<URL-ENCODED_PASSWORD>@cluster0.02eoqkv.mongodb.net/interview_prep?retryWrites=true&w=majority"
+```
+- Do NOT commit `backend/.env` to source control. It's already ignored in `.gitignore`.
