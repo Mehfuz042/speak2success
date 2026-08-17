@@ -25,6 +25,7 @@ flask.log
 
 # Temp / build artifacts
 SIP_Interview_Platform.zip
+Speak2Success_PythonAnywhere.zip
 test_out.txt
 test_patch_verify.py
 

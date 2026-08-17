@@ -18,9 +18,16 @@ import json
 import threading
 from collections import Counter
 
-import cv2
-import mediapipe as mp
-import numpy as np
+try:
+    import cv2
+    import mediapipe as mp
+    import numpy as np
+    _CV2_AVAILABLE = True
+except ImportError:
+    cv2 = None
+    mp = None
+    np = None
+    _CV2_AVAILABLE = False
 
 # Reference ranges tuned for a typical web-cam interview session.
 EYE_CONTACT_IDEAL_MIN = 60      # % of time looking toward the camera
@@ -60,6 +67,8 @@ _POSE = None
 def _models():
     """Lazily construct (and share) MediaPipe solutions under a lock."""
     global _FACE, _POSE
+    if not _CV2_AVAILABLE:
+        return None, None
     if _FACE is None:
         _FACE = mp.solutions.face_mesh.FaceMesh(
             static_image_mode=True,
