@@ -1,6 +1,38 @@
+# Python
 .venv/
 __pycache__/
 *.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Node / Vite
+node_modules/
+frontend/dist/
+npm-debug.log*
+*.local
+
+# Secrets - never commit real credentials
+**/.env
+
+# Runtime data (persistent sessions + recorded answer audio)
+backend/data/
+
+# Logs
+flask.log
+
+# Temp / build artifacts
+SIP_Interview_Platform.zip
+test_out.txt
+test_patch_verify.py
+
+# Legacy / old prep
+legacy_sip_prep/
+
+# Editor / OS
 .DS_Store
-# Backend environment
-backend/.env
+Thumbs.db
+.vscode/
+.idea/
