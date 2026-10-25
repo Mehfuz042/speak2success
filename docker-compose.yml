@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    image: speak2success:latest
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: "5000"
+      ALLOWED_ORIGINS: "http://localhost:5000"
+      GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
+      STORAGE_PATH: "/app/backend/data/speak2success.sqlite3"
+      AUDIO_DIR: "/app/backend/data/audio"
+    volumes:
+      - ./backend/data:/app/backend/data
+    restart: unless-stopped
