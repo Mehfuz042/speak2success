@@ -1,0 +1,12 @@
+# Optional server-side computer vision (NOT required by the web app).
+#
+# The production React app runs MediaPipe Tasks Vision in the browser, which
+# gives real-time confidence/body-language readings without sending video to
+# the server. Install this file only if you also want the optional REST/WS
+# vision endpoints (/api/body-language/analyze, /ws/coach) to work.
+#
+# Requires Python 3.10-3.12 (mediapipe has no 3.13 wheel) and native libs
+# (libGL.so.1 / libgomp1 on Linux). The Docker image already provides them.
+numpy>=1.26,<2.1
+opencv-python-headless==4.10.0.84
+mediapipe==0.10.14

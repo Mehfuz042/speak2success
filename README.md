@@ -46,7 +46,7 @@ Resume upload → Role & coding setup → Managerial Round → Technical Round
 | --- | --- |
 | Frontend | React 18, Vite 5, Tailwind CSS 3 |
 | Backend | Python 3.10, Flask 3 |
-| AI (optional) | Google Gemini via its OpenAI-compatible endpoint (`gemini-3.5-flash`, overridable) |
+| AI (optional) | Google Gemini via its OpenAI-compatible endpoint (`gemini-3.5-flash`, fallback `gemini-3.6-flash`, overridable) |
 | Computer vision | **MediaPipe Tasks Vision in the browser** (`@mediapipe/tasks-vision`); no server-side OpenCV/MediaPipe required |
 | Coding runner | Subprocess-isolated Python/Node/Java/C++ with hard timeouts |
 | Speech | Web Speech API (browser) + WPM/filler/clarity analysis |
@@ -134,6 +134,7 @@ PORT=5000
 ALLOWED_ORIGINS=http://localhost:5173
 GEMINI_API_KEY=AIza...   # optional: enables AI questions + feedback
 OPENAI_MODEL=gemini-3.5-flash   # optional model override
+OPENAI_FALLBACK_MODELS=gemini-3.6-flash   # optional comma-separated fallbacks
 STORAGE_PATH=backend/data/speak2success.sqlite3   # omit for an in-memory store
 # AUDIO_DIR=backend/data/audio                    # where recorded answers are kept
 ```
@@ -142,6 +143,16 @@ STORAGE_PATH=backend/data/speak2success.sqlite3   # omit for an in-memory store
 generation, answer feedback and the final report use Gemini; without it everything runs
 on the offline engine (with randomized, non-repeating questions). `backend/.env` is
 git-ignored. The test suite forces the offline engine so it never depends on the live API.
+
+Gemini calls try `gemini-3.5-flash` first and then `gemini-3.6-flash`. If both
+are overloaded or out of quota, the request immediately uses the offline
+engine and Gemini is retried after a short cooldown. Free-tier keys currently
+allow about 20 requests per model per day; a single full interview can use
+roughly 15 (question generation + per-answer feedback + the report). Check
+`/api/health` for `ai_available`, `ai_runtime.cooldown_seconds` and the last
+AI error. Set `OPENAI_FALLBACK_MODELS` to a comma-separated list to override
+the fallback order. For regular AI use, enable billing on the Google Cloud
+project or use a paid-tier key.
 
 ## Project structure
 
@@ -180,7 +191,7 @@ git-ignored. The test suite forces the offline engine so it never depends on the
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| GET | `/api/health` | Status, AI provider, Gemini key presence |
+| GET | `/api/health` | Status, AI provider, key presence, live availability/cooldown |
 | POST | `/api/resume/parse` | Upload PDF/TXT → skills, suggested roles, experience |
 | GET | `/api/languages` | Supported coding languages |
 | GET | `/api/challenges?language=&difficulty=` | Coding challenges + starter code |
